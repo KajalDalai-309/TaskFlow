@@ -28,20 +28,39 @@ function AuthInitialize({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
+      // Step 1: Check sessionStorage for persisted session (survives page refreshes in same tab)
+      const savedUser = sessionStorage.getItem('taskflow_user');
+      const savedToken = sessionStorage.getItem('taskflow_token');
+
+      if (savedUser && savedToken) {
+        try {
+          dispatch(loginSuccess({
+            user: JSON.parse(savedUser),
+            token: savedToken,
+          }));
+          dispatch(setInitializing(false));
+          return; // Restored from storage — no need to hit backend
+        } catch {
+          sessionStorage.removeItem('taskflow_user');
+          sessionStorage.removeItem('taskflow_token');
+        }
+      }
+
+      // Step 2: Try to restore via refresh token cookie (for returning users)
       try {
         const { data } = await refreshToken();
         if (data?.refreshToken?.user) {
           dispatch(loginSuccess({
             user: data.refreshToken.user,
-            // The new access token is already handled by Apollo authAfterware but we can explicitly set it if needed 
-            // from data.refreshToken.token (if we had requested it in the GraphQL query)
+            token: (data.refreshToken as any).token,
           }));
         } else {
           dispatch(logout());
         }
       } catch (error) {
+        // Cross-origin cookie may fail — don't force logout, just mark init done
         console.error("Failed to restore session via refresh token", error);
-        dispatch(logout()); // Ensure Redux clears if cookie is invalid
+        dispatch(setInitializing(false));
       } finally {
         dispatch(setInitializing(false));
       }

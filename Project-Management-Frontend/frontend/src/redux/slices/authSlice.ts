@@ -37,6 +37,10 @@ const authSlice = createSlice({
         setToken: (state, action: PayloadAction<string>) => {
             state.token = action.payload;
             state.isAuthenticated = true;
+            // Update sessionStorage token too
+            if (state.user) {
+                sessionStorage.setItem('taskflow_token', action.payload);
+            }
         },
         loginSuccess: (state, action: PayloadAction<{ user: User; token?: string }>) => {
             state.loading = false;
@@ -46,6 +50,9 @@ const authSlice = createSlice({
 
             if (action.payload.token) {
                 state.token = action.payload.token;
+                // Persist to sessionStorage so page refresh keeps user logged in
+                sessionStorage.setItem('taskflow_user', JSON.stringify(action.payload.user));
+                sessionStorage.setItem('taskflow_token', action.payload.token);
             }
         },
         loginFailure: (state, action: PayloadAction<string>) => {
@@ -58,6 +65,9 @@ const authSlice = createSlice({
             state.token = null;
             state.isAuthenticated = false;
             state.isInitializing = false;
+            // Clear session storage on logout
+            sessionStorage.removeItem('taskflow_user');
+            sessionStorage.removeItem('taskflow_token');
         },
         setInitializing: (state, action: PayloadAction<boolean>) => {
             state.isInitializing = action.payload;
