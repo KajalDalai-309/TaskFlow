@@ -65,12 +65,13 @@ let pendingRequests: Array<{
   observer: any;
 }> = [];
 
-const errorLink = new ErrorLink(({ graphQLErrors, networkError, operation, forward }) => {
+const errorLink = new ErrorLink(({ error, operation, forward }: any) => {
+  const graphQLErrors = CombinedGraphQLErrors.is(error) ? error.errors : (error as any)?.graphQLErrors;
   // Only handle GraphQL auth errors
   if (!graphQLErrors) return;
 
   const hasAuthError = graphQLErrors.some(
-    (err) =>
+    (err: any) =>
       err.extensions?.code === 'UNAUTHENTICATED' ||
       err.message?.toLowerCase().includes('unauthorized') ||
       err.message?.toLowerCase().includes('jwt expired')
