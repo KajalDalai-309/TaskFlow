@@ -1,0 +1,20 @@
+﻿5bcd86e Merge branch 'main' into kshitish1
+5149327 Resolve merge conflicts in schema.gql
+a48377a Fix(Integration): Board visibility, real-time updates, and UI crashes
+e614532 Merge branch 'main' into kshitish1
+abaf7ec Resolve merge conflicts in schema.gql
+f674179 fix: edited in schema.gql file
+45add09 Merge pull request #10 from Chequ-Project-Management/SandeepFront
+c376952 get issues query passed
+a7809e7 updation on schema.gql
+bed9b15 fix(sprint): fix the issue of creation of sprint
+ca67393 Resolve merge conflicts in schema.gql
+0582ee6 integration with backend
+8267b4f feat(issue): add delete and get-all capabilities
+1afe57f Merge remote-tracking branch 'origin/main' into SandeepFront
+3d75fd7 docker port changed
+3bebb8a add: add missing input field into update-issue-input.ts file
+b9667c7 added
+320c352 Merge pull request #9 from Chequ-Project-Management/SandeepFront
+f95d4e3 added
+8735cf0 conflicts resolved

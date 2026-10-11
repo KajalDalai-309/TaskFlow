@@ -1,0 +1,20 @@
+﻿5bcd86e HEAD@{0}: merge main: Merge made by the 'ort' strategy.
+5149327 HEAD@{1}: checkout: moving from main to kshitish1
+a48377a HEAD@{2}: pull: Fast-forward
+45add09 HEAD@{3}: checkout: moving from kshitish1 to main
+5149327 HEAD@{4}: commit: Resolve merge conflicts in schema.gql
+e614532 HEAD@{5}: merge main: Merge made by the 'ort' strategy.
+abaf7ec HEAD@{6}: checkout: moving from main to kshitish1
+45add09 HEAD@{7}: pull: Fast-forward
+8267b4f HEAD@{8}: checkout: moving from kshitish1 to main
+abaf7ec HEAD@{9}: commit: Resolve merge conflicts in schema.gql
+ca67393 HEAD@{10}: commit (merge): Resolve merge conflicts in schema.gql
+0582ee6 HEAD@{11}: checkout: moving from main to kshitish1
+8267b4f HEAD@{12}: pull: Fast-forward
+320c352 HEAD@{13}: checkout: moving from kshitish1 to main
+0582ee6 HEAD@{14}: commit (merge): integration with backend
+b9667c7 HEAD@{15}: checkout: moving from main to kshitish1
+320c352 HEAD@{16}: pull: Fast-forward
+9c49d7c HEAD@{17}: checkout: moving from kshitish1 to main
+b9667c7 HEAD@{18}: commit: added
+f95d4e3 HEAD@{19}: checkout: moving from main to kshitish1
