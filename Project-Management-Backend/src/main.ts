@@ -7,8 +7,28 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const frontendUrl = process.env.FRONTEND_URL;
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (!frontendUrl || frontendUrl === '*') return callback(null, true);
+
+      const allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        frontendUrl,
+      ];
+
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   });
 
@@ -18,8 +38,8 @@ async function bootstrap() {
   const { graphqlUploadExpress } = require('graphql-upload');
   app.use(graphqlUploadExpress({ maxFileSize: 3 * 1024 * 1024, maxFiles: 5 })); // 3MB limit
 
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
-  console.log('🚀 SERVER VERSION: FIXED_REGISTRATION_DTO (If you see this, the code is updated)');
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application is running on port: ${port}`);
 }
 bootstrap();
