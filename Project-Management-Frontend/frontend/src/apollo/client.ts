@@ -80,8 +80,14 @@ const errorLink = new ErrorLink(({ error, operation, forward }: any) => {
   if (!hasAuthError) return;
 
   // Don't try to refresh if the failing operation IS the refresh
-  if (operation.operationName === 'RefreshToken') {
-    store.dispatch(logout());
+  if (
+    operation.operationName === 'RefreshToken' ||
+    operation.operationName === 'Login' ||
+    operation.operationName === 'CompleteRegistration'
+  ) {
+    if (operation.operationName === 'RefreshToken') {
+      store.dispatch(logout());
+    }
     return;
   }
 
