@@ -220,18 +220,15 @@ export class AuthService {
     user.resetTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
     await this.userRepo.save(user);
 
-    let mailSent = false;
-    try {
-      await this.mailService.sendForgotPasswordOtp(email, otp);
-      mailSent = true;
-    } catch (mailError: any) {
-      this.logger.warn('Email sending failed (Render Free Tier blocks SMTP ports). Fallback OTP: ' + otp);
-    }
+    // Send email non-blocking in background
+    this.mailService
+      .sendForgotPasswordOtp(email, otp)
+      .catch((mailError: any) => {
+        this.logger.warn('Email notice: ' + (mailError?.message || mailError) + '. Fallback OTP: ' + otp);
+      });
 
     return {
-      message: mailSent
-        ? 'OTP sent to your email'
-        : 'Your OTP is: ' + otp,
+      message: 'Your OTP is: ' + otp,
     };
   }
 

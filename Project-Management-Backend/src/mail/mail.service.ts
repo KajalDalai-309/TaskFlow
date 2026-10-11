@@ -44,6 +44,7 @@ export class MailService {
     const rawFrontendUrl = this.configService.get<string>('FRONTEND_URL') || 'https://task-flow-kappa-peach.vercel.app';
     const frontendUrl = rawFrontendUrl.replace(/\/+$/, ''); // Remove trailing slashes
     const inviteLink = `${frontendUrl}/register?token=${token}`;
+    this.logger.log(`\n========================================\n[INVITATION LINK FOR ${email}]:\n${inviteLink}\n========================================\n`);
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px;">
         <h2 style="color: #4f46e5; margin-top: 0;">Welcome to TaskFlow</h2>

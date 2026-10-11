@@ -109,8 +109,7 @@ export class InvitesService {
     await this.inviteTokenRepository.save(inviteToken);
 
     // 4. Send Email with custom token
-    await this.mailService.sendInviteEmail(email, customToken, roles[0] || 'USER');
-
+    this.mailService.sendInviteEmail(email, customToken, roles[0] || 'USER').catch((err) => console.warn('[MAIL NOTICE] ' + err?.message));
     return `Invitation sent to ${email}`;
   }
 
