@@ -87,7 +87,7 @@ export default function Login() {
             });
 
             if (res.data) {
-                const { user } = res.data.login;
+                const { user, token: returnedToken } = res.data.login as any;
 
                 const reduxUser = {
                     id: user.id,
@@ -95,11 +95,8 @@ export default function Login() {
                     roles: user.roles || ['User'],
                 };
 
-                // Small delay to ensure authAfterware has processed the response headers
-                await new Promise(resolve => setTimeout(resolve, 50));
-
-                // Get the token that was set by authAfterware
-                const token = store.getState().auth.token;
+                // Use token directly from login response payload or authAfterware
+                const token = returnedToken || store.getState().auth.token;
 
                 // Pass both user and token to loginAction
                 loginAction(reduxUser, token || undefined);

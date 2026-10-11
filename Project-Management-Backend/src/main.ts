@@ -30,6 +30,7 @@ async function bootstrap() {
       return callback(null, true);
     },
     credentials: true,
+    exposedHeaders: ['Authorization', 'authorization'],
   });
 
   app.use(cookieParser());
