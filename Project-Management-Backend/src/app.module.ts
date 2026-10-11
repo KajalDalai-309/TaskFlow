@@ -28,12 +28,17 @@ import { WorkflowsModule } from './modules/workflows/workflows.module'; // ✅ A
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: config.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
+      useFactory: (config: ConfigService) => {
+        const dbUrl = config.get<string>('DATABASE_URL');
+        const isSsl = dbUrl?.includes('sslmode=require') || process.env.NODE_ENV === 'production';
+        return {
+          type: 'postgres',
+          url: dbUrl,
+          autoLoadEntities: true,
+          synchronize: true,
+          ssl: isSsl ? { rejectUnauthorized: false } : false,
+        };
+      },
     }),
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
