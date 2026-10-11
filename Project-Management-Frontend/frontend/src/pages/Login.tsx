@@ -124,9 +124,13 @@ export default function Login() {
         }
 
         try {
-            await forgotPasswordMutation({
+            const res = await forgotPasswordMutation({
                 variables: { email: forgotEmail },
             });
+
+            const msg = (res.data as any)?.forgotPassword || 'OTP sent to your email';
+            setSuccessMessage(msg);
+            toast.success(msg, { duration: 6000 });
 
             setStep('VERIFY_OTP');
             setTimer(60); // 1 minute

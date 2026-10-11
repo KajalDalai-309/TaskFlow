@@ -25,12 +25,15 @@ export class MailService {
       tls: {
         rejectUnauthorized: false,
       },
+      connectionTimeout: 4000,
+      socketTimeout: 4000,
+      greetingTimeout: 4000,
     });
 
-    // Verify connection on startup
+    // Verify connection on startup without blocking
     this.transporter.verify((error) => {
       if (error) {
-        this.logger.error('SMTP Connection Error:', error);
+        this.logger.warn(`SMTP Notice: Outbound port ${port} unreachable or blocked by hosting environment (${error.message}).`);
       } else {
         this.logger.log('SMTP Server is ready to take our messages');
       }
@@ -65,31 +68,26 @@ export class MailService {
       });
       this.logger.log(`Invitation email successfully sent to ${email}`);
     } catch (error) {
-      this.logger.error(`Failed to send invitation email to ${email}. Error: ${error.message}`, error.stack);
+      this.logger.error(`Failed to send invitation email to ${email}. Error: ${error.message}`);
       throw error;
     }
   }
 
   async sendForgotPasswordOtp(email: string, otp: string) {
     this.logger.log(`[FORGOT PASSWORD OTP] Generating OTP for ${email}: ${otp}`);
-    try {
-      await this.transporter.sendMail({
-        from: `"TaskFlow" <${this.smtpUser}>`,
-        to: email,
-        subject: 'TaskFlow Password Reset OTP',
-        html: `
-          <h3>Password Reset Request</h3>
-          <p>We received a request to reset your password.</p>
-          <p>Your One-Time Password (OTP) is:</p>
-          <h2 style="letter-spacing: 3px; font-size: 28px; color: #4F46E5;">${otp}</h2>
-          <p>This OTP is valid for 15 minutes.</p>
-          <p>If you did not request this, please ignore this email.</p>
-        `,
-      });
-      this.logger.log(`Password reset OTP sent to ${email}`);
-    } catch (error) {
-      this.logger.error('Failed to send password reset OTP', error);
-      throw error;
-    }
+    await this.transporter.sendMail({
+      from: `"TaskFlow" <${this.smtpUser}>`,
+      to: email,
+      subject: 'TaskFlow Password Reset OTP',
+      html: `
+        <h3>Password Reset Request</h3>
+        <p>We received a request to reset your password.</p>
+        <p>Your One-Time Password (OTP) is:</p>
+        <h2 style="letter-spacing: 3px; font-size: 28px; color: #4F46E5;">${otp}</h2>
+        <p>This OTP is valid for 15 minutes.</p>
+        <p>If you did not request this, please ignore this email.</p>
+      `,
+    });
+    this.logger.log(`Password reset OTP sent to ${email}`);
   }
 }
