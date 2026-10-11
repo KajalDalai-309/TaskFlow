@@ -10,14 +10,15 @@ export interface BackendUser {
 export interface LoginResponse {
     message: string;
     user: BackendUser;
-    accessToken: string;
+    token?: string;
+    accessToken?: string;
 }
 
 // User structure expected by Redux (derived)
 export interface User {
     id: string;
     email: string;
-    name: string;
+    name?: string;
     roles: string[];
-    initials: string;
+    initials?: string;
 }

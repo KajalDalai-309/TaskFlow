@@ -37,9 +37,11 @@ const authSlice = createSlice({
         setToken: (state, action: PayloadAction<string>) => {
             state.token = action.payload;
             state.isAuthenticated = true;
-            // Update sessionStorage token too
-            if (state.user) {
+            try {
+                localStorage.setItem('taskflow_token', action.payload);
                 sessionStorage.setItem('taskflow_token', action.payload);
+            } catch (e) {
+                console.error("Storage error:", e);
             }
         },
         loginSuccess: (state, action: PayloadAction<{ user: User; token?: string }>) => {
@@ -50,9 +52,14 @@ const authSlice = createSlice({
 
             if (action.payload.token) {
                 state.token = action.payload.token;
-                // Persist to sessionStorage so page refresh keeps user logged in
-                sessionStorage.setItem('taskflow_user', JSON.stringify(action.payload.user));
-                sessionStorage.setItem('taskflow_token', action.payload.token);
+                try {
+                    localStorage.setItem('taskflow_user', JSON.stringify(action.payload.user));
+                    localStorage.setItem('taskflow_token', action.payload.token);
+                    sessionStorage.setItem('taskflow_user', JSON.stringify(action.payload.user));
+                    sessionStorage.setItem('taskflow_token', action.payload.token);
+                } catch (e) {
+                    console.error("Storage error:", e);
+                }
             }
         },
         loginFailure: (state, action: PayloadAction<string>) => {
@@ -65,9 +72,14 @@ const authSlice = createSlice({
             state.token = null;
             state.isAuthenticated = false;
             state.isInitializing = false;
-            // Clear session storage on logout
-            sessionStorage.removeItem('taskflow_user');
-            sessionStorage.removeItem('taskflow_token');
+            try {
+                localStorage.removeItem('taskflow_user');
+                localStorage.removeItem('taskflow_token');
+                sessionStorage.removeItem('taskflow_user');
+                sessionStorage.removeItem('taskflow_token');
+            } catch (e) {
+                console.error("Storage clear error:", e);
+            }
         },
         setInitializing: (state, action: PayloadAction<boolean>) => {
             state.isInitializing = action.payload;

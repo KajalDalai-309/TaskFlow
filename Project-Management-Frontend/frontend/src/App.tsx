@@ -28,9 +28,9 @@ function AuthInitialize({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      // Step 1: Check sessionStorage for persisted session (survives page refreshes in same tab)
-      const savedUser = sessionStorage.getItem('taskflow_user');
-      const savedToken = sessionStorage.getItem('taskflow_token');
+      // Step 1: Check localStorage or sessionStorage for persisted session
+      const savedUser = localStorage.getItem('taskflow_user') || sessionStorage.getItem('taskflow_user');
+      const savedToken = localStorage.getItem('taskflow_token') || sessionStorage.getItem('taskflow_token');
 
       if (savedUser && savedToken) {
         try {
@@ -41,6 +41,8 @@ function AuthInitialize({ children }: { children: React.ReactNode }) {
           dispatch(setInitializing(false));
           return; // Restored from storage — no need to hit backend
         } catch {
+          localStorage.removeItem('taskflow_user');
+          localStorage.removeItem('taskflow_token');
           sessionStorage.removeItem('taskflow_user');
           sessionStorage.removeItem('taskflow_token');
         }

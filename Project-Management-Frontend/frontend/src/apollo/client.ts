@@ -25,13 +25,13 @@ const httpLink = new UploadHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const state = store.getState();
-  const token = state.auth.token;
+  const token = state.auth.token || localStorage.getItem('taskflow_token') || sessionStorage.getItem('taskflow_token');
   return {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : "",
     }
-  }
+  };
 });
 
 const authAfterware = new ApolloLink((operation, forward) => {
@@ -79,7 +79,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }: any) => {
 
   if (!hasAuthError) return;
 
-  // Don't try to refresh if the failing operation IS the refresh
+  // Don't try to refresh if the failing operation IS the refresh, login, or public auth mutations
   if (
     operation.operationName === 'RefreshToken' ||
     operation.operationName === 'Login' ||
@@ -106,7 +106,11 @@ const errorLink = new ErrorLink(({ error, operation, forward }: any) => {
         .then((res) => {
           isRefreshing = false;
 
-          if ((res.data as any)?.refreshToken?.user) {
+          const refreshData = (res.data as any)?.refreshToken;
+          if (refreshData?.user) {
+            if (refreshData.token) {
+              store.dispatch(setToken(refreshData.token));
+            }
             // Retry the original failed operation
             forward(operation).subscribe(observer);
 
@@ -120,7 +124,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }: any) => {
             observer.error(new Error("Session expired"));
           }
         })
-        .catch((err) => {
+        .catch(() => {
           isRefreshing = false;
           pendingRequests = [];
           store.dispatch(logout());

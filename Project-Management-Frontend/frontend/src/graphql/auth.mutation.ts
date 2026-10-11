@@ -4,6 +4,7 @@ export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       message
+      token
       user {
         id
         email
@@ -17,6 +18,7 @@ export const REFRESH_TOKEN_MUTATION = gql`
   mutation RefreshToken {
     refreshToken {
       message
+      token
       user {
         id
         email
@@ -68,12 +70,6 @@ export const RESET_PASSWORD_MUTATION = gql`
 }
 `;
 
-// export const DELETE_USER_MUTATION = gql`
-//   mutation DeleteUser($email: String!) {
-//   deleteUser(email: $email)
-// }
-// `;
-
 export const UPDATE_PROFILE_MUTATION = gql`
   mutation UpdateProfile($input: UpdateUserInput!) {
   updateProfile(input: $input) {
@@ -103,15 +99,3 @@ export const DELETE_USER_MUTATION = gql`
     deleteUser(email: $email)
   }
 `;
-
-// export const UPDATE_PROFILE_MUTATION = gql`
-//   mutation UpdateProfile($input: UpdateUserInput!) {
-//     updateProfile(input: $input) {
-//       id
-//       firstName
-//       lastName
-//       phone
-//       email
-//     }
-//   }
-// `;
